@@ -91,6 +91,45 @@ function initActiveNavLink() {
 }
 
 // ------------------------------------------------------------------
+// Photo galleries: any [data-gallery] container cycles through its
+// .gallery-slide children via prev/next arrows or dot clicks.
+// ------------------------------------------------------------------
+function initGalleries() {
+  document.querySelectorAll('[data-gallery]').forEach((gallery) => {
+    const slides = gallery.querySelectorAll('.gallery-slide');
+    if (slides.length <= 1) return;
+
+    const dots = gallery.querySelectorAll('.gallery-dot');
+    let index = 0;
+
+    const show = (nextIndex) => {
+      slides[index].classList.remove('active');
+      if (dots[index]) dots[index].classList.remove('active');
+      index = (nextIndex + slides.length) % slides.length;
+      slides[index].classList.add('active');
+      if (dots[index]) dots[index].classList.add('active');
+    };
+
+    gallery.querySelector('.gallery-prev')?.addEventListener('click', (event) => {
+      event.preventDefault();
+      show(index - 1);
+    });
+
+    gallery.querySelector('.gallery-next')?.addEventListener('click', (event) => {
+      event.preventDefault();
+      show(index + 1);
+    });
+
+    dots.forEach((dot, dotIndex) => {
+      dot.addEventListener('click', (event) => {
+        event.preventDefault();
+        show(dotIndex);
+      });
+    });
+  });
+}
+
+// ------------------------------------------------------------------
 // Contact form: front-end only, no backend. Builds a mailto: link from
 // the field values and opens it, so the visitor's own email app sends
 // the message directly to LavenderGate. A real backend/email service
@@ -150,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileNav();
   initScrollReveal();
   initActiveNavLink();
+  initGalleries();
   initContactForm();
   initBackToTop();
 });
