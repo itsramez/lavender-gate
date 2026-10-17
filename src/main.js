@@ -81,10 +81,15 @@ function initScrollReveal() {
 // Highlight the current page in the nav.
 // ------------------------------------------------------------------
 function initActiveNavLink() {
-  const current = window.location.pathname.split('/').pop() || 'index.html';
+  const normalize = (path) => {
+    const last = path.split('/').filter(Boolean).pop() || 'index.html';
+    return last.replace(/\.html$/, '');
+  };
+
+  const current = normalize(window.location.pathname);
   document.querySelectorAll('.nav-links a').forEach((link) => {
     const href = link.getAttribute('href');
-    if (href === current) {
+    if (normalize(href) === current) {
       link.classList.add('active');
     }
   });
